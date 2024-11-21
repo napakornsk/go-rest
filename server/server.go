@@ -28,7 +28,7 @@ func StartRESTServer() {
 	r.SetupRouter(g)
 
 	// Start the server using the specified port from the configuration
-	serverAddress := fmt.Sprintf("localhost:%s", c.AppPort)
+	serverAddress := fmt.Sprintf(":%s", c.AppPort)
 	log.Printf("Starting REST server on %s...", serverAddress)
 	if err := g.Run(serverAddress); err != nil {
 		log.Fatalf("Failed to start REST server: %v", err)

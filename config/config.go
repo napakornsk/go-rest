@@ -20,7 +20,7 @@ type AccomConfig struct {
 }
 
 func InitConfig() *AccomConfig {
-	err := godotenv.Load(".env")
+	err := godotenv.Load("/app/.env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
