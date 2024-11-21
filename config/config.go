@@ -16,10 +16,15 @@ type AccomConfig struct {
 	Timezone string
 	SslMode  string
 	AppPort  string
+	AppMode  string
 }
 
 func InitConfig() *AccomConfig {
 	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
+	appMode := os.Getenv("APP_MODE")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
@@ -68,5 +73,6 @@ func InitConfig() *AccomConfig {
 		Timezone: timezone,
 		SslMode:  sslMode,
 		AppPort:  appPort,
+		AppMode:  appMode,
 	}
 }

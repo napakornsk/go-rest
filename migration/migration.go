@@ -12,6 +12,7 @@ import (
 func main() {
 	c := config.InitConfig()
 	db, err := database.InitPostgres(
+		c.AppMode,
 		c.Host, c.User,
 		c.Password, c.DbName,
 		c.Port, c.Timezone,

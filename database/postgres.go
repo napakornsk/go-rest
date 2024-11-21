@@ -15,17 +15,22 @@ type Database struct {
 	Postgres *gorm.DB
 }
 
-func InitPostgres(host, user, password, dbname, port, timezone, sslMode string) (*Database, error) {
+func InitPostgres(appMode, host, user, password, dbname, port, timezone, sslMode string) (*Database, error) {
 	d := &Database{}
-	err := d.connectPostgres(host, user, password, dbname, port, timezone, sslMode)
+	err := d.connectPostgres(appMode, host, user, password, dbname, port, timezone, sslMode)
 	if err != nil {
 		return nil, err
 	}
 	return d, nil
 }
 
-func (d *Database) connectPostgres(host, user, password, dbname, port, timezone, sslMode string) error {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s timezone=%s sslmode=%s", host, user, password, dbname, port, timezone, sslMode)
+func (d *Database) connectPostgres(appMode, host, user, password, dbname, port, timezone, sslMode string) error {
+	dsn := ""
+	if appMode == "DEV" {
+		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s", host, user, password, dbname, port)
+	} else {
+		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s timezone=%s sslmode=%s", host, user, password, dbname, port, timezone, sslMode)
+	}
 	// Custom logger configuration
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer with timestamp

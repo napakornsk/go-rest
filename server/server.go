@@ -16,7 +16,7 @@ func StartRESTServer() {
 	c := config.InitConfig()
 	g := gin.Default()
 
-	db, err := database.InitPostgres(c.Host, c.User, c.Password, c.DbName, c.Port, c.Timezone, c.SslMode)
+	db, err := database.InitPostgres(c.AppMode, c.Host, c.User, c.Password, c.DbName, c.Port, c.Timezone, c.SslMode)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v\n", err)
 	}
