@@ -20,9 +20,9 @@ FROM alpine:latest
 # Install CA certificates for HTTPS connections
 RUN apk --no-cache add ca-certificates
 
-# Copy the compiled binary and .env file from the builder stage
-COPY --from=builder /app/api /api
-COPY .env /app/.env
+# UNCOMMENT IF RUN LOCALLY
+# COPY --from=builder /app/api /api
+# COPY .env /app/.env
 
 # Expose the port the app will run on
 EXPOSE 8082
