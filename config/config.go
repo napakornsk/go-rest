@@ -22,10 +22,9 @@ func InitConfig() *AccomConfig {
 	// if err != nil {
 	// 	log.Fatalf("Error loading .env file: %v", err)
 	// }
-	err := new(error)
 	appMode := os.Getenv("APP_MODE")
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+	if appMode == "" {
+		log.Fatalf("APP_MODE not set in .env")
 	}
 	host := os.Getenv("DB_HOST")
 	if host == "" {
