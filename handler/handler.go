@@ -9,18 +9,28 @@ import (
 	"github.com/napakornsk/go-rest/service"
 )
 
-type StudentHandler struct {
-	srv *service.StudentSrv
+type PortfolioHandler struct {
+	srv *service.PortfolioSrv
 }
 
-func InitStudentHandler(srv *service.StudentSrv) *StudentHandler {
-	return &StudentHandler{
+func InitPortfolioHandler(srv *service.PortfolioSrv) *PortfolioHandler {
+	return &PortfolioHandler{
 		srv: srv,
 	}
 }
 
-func (h *StudentHandler) GetAllStudentHandler(c *gin.Context) {
-	data, err := h.srv.GetAllStudents()
+func (h *PortfolioHandler) GetIntroHandler(c *gin.Context)  {
+	intro := new(model.Intro)
+	err := c.ShouldBindJSON(intro)
+	if err != nil {
+		log.Printf("Failed to bind JSON: %v\n", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Failed to bind JSON: %s" + err.Error(),
+		})
+		return
+	}
+
+	data, err := h.srv.GetIntro(intro.UserID)
 	if err != nil {
 		log.Printf("Failed to receive data from service: %v\n", err)
 		c.IndentedJSON(
@@ -41,25 +51,44 @@ func (h *StudentHandler) GetAllStudentHandler(c *gin.Context) {
 	)
 }
 
-func (h *StudentHandler) CreateStudentHandler(c *gin.Context) {
-	model := new(model.CreateStudent)
-	err := c.ShouldBindJSON(model)
+func (h *PortfolioHandler) GetAllIntroHandler(c *gin.Context) {
+	data, err := h.srv.GetAllIntro()
 	if err != nil {
-		log.Printf("Failed to bind json: %v\n", err)
+		log.Printf("Failed to receive data from service: %v\n", err)
 		c.IndentedJSON(
-			http.StatusBadRequest,
+			http.StatusOK,
 			gin.H{
-				"message": "Failed to bind json: " + err.Error(),
+				"message": "Failed to receive data from service: " + err.Error(),
 			},
 		)
 		return
 	}
 
-	data, err := h.srv.CreateStudents(model.Student)
+	c.IndentedJSON(
+		http.StatusOK,
+		gin.H{
+			"message": "successful",
+			"data":    data,
+		},
+	)
+}
+
+func (h *PortfolioHandler) CreateIntroHandler(c *gin.Context) {
+	intro := new(model.Intro)
+	err := c.ShouldBindJSON(intro)
+	if err != nil {
+		log.Printf("Failed to bind JSON: %v\n", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Failed to bind JSON: %s" + err.Error(),
+		})
+		return
+	}
+
+	data, err := h.srv.CreateIntro(intro)
 	if err != nil {
 		log.Printf("Failed to receive data from service: %v\n", err)
 		c.IndentedJSON(
-			http.StatusInternalServerError,
+			http.StatusOK,
 			gin.H{
 				"message": "Failed to receive data from service: " + err.Error(),
 			},

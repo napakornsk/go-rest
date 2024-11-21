@@ -22,9 +22,9 @@ func StartRESTServer() {
 	}
 
 	// Initialize REST services
-	srv := service.InitStudentSrv(db)
-	h := handler.InitStudentHandler(srv)
-	r := router.InitStudentRouter(h)
+	srv := service.InitPortfolioSrv(db)
+	h := handler.InitPortfolioHandler(srv)
+	r := router.InitPortfolioRouter(h)
 	r.SetupRouter(g)
 
 	// Start the server using the specified port from the configuration

@@ -7,27 +7,27 @@ import (
 	"github.com/napakornsk/go-rest/orm/model"
 )
 
-type StudentSrv struct {
+type PortfolioSrv struct {
 	repo *database.Database
 }
 
-func InitStudentSrv(repo *database.Database) *StudentSrv {
-	return &StudentSrv{
+func InitPortfolioSrv(repo *database.Database) *PortfolioSrv {
+	return &PortfolioSrv{
 		repo: repo,
 	}
 }
 
-func (s *StudentSrv) GetAllStudents() ([]*model.Student, error) {
+func (s *PortfolioSrv) GetIntro(userId uint) (*model.Intro, error) {
 	tx := s.repo.Postgres.Begin()
 	if tx.Error != nil {
 		log.Printf("Failed to start transaction: %v", tx.Error)
 		return nil, tx.Error
 	}
 
-	var students []*model.Student
+	intro := new(model.Intro)
 
-	if err := tx.Find(&students).Error; err != nil {
-		log.Printf("Failed to fetch students: %v", err)
+	if err := tx.Where("user_id = ?", userId).Preload("Contact").Find(intro).Error; err != nil {
+		log.Printf("Failed to fetch intro: %v", err)
 		tx.Rollback() // Rollback the transaction on error
 		return nil, err
 	}
@@ -37,20 +37,21 @@ func (s *StudentSrv) GetAllStudents() ([]*model.Student, error) {
 		return nil, err
 	}
 
-	return students, nil
+	return intro, nil
 }
 
-func (s *StudentSrv) CreateStudents(studentModel []*model.Student) ([]*uint, error) {
+func (s *PortfolioSrv) GetAllIntro() ([]*model.Intro, error) {
 	tx := s.repo.Postgres.Begin()
 	if tx.Error != nil {
 		log.Printf("Failed to start transaction: %v", tx.Error)
 		return nil, tx.Error
 	}
 
-	var successID []*uint
-	if err := tx.Omit("id").CreateInBatches(studentModel, len(studentModel)).Error; err != nil {
-		log.Printf("Failed to create student: %v", err)
-		tx.Rollback()
+	var intro []*model.Intro
+
+	if err := tx.Find(&intro).Error; err != nil {
+		log.Printf("Failed to fetch intro: %v", err)
+		tx.Rollback() // Rollback the transaction on error
 		return nil, err
 	}
 
@@ -59,8 +60,26 @@ func (s *StudentSrv) CreateStudents(studentModel []*model.Student) ([]*uint, err
 		return nil, err
 	}
 
-	for _, student := range studentModel {
-		successID = append(successID, &student.ID)
+	return intro, nil
+}
+
+func (s *PortfolioSrv) CreateIntro(model *model.Intro) (*uint, error) {
+	tx := s.repo.Postgres.Begin()
+	if tx.Error != nil {
+		log.Printf("Failed to start transaction: %v", tx.Error)
+		return nil, tx.Error
 	}
-	return successID, nil
+
+	if err := tx.Create(model).Error; err != nil {
+		log.Printf("Failed to create intro: %v", err)
+		tx.Rollback() // Rollback the transaction on error
+		return nil, err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		log.Printf("Failed to commit transaction: %v", err)
+		return nil, err
+	}
+
+	return &model.ID, nil
 }

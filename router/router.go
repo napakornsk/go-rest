@@ -7,17 +7,17 @@ import (
 	"github.com/napakornsk/go-rest/handler"
 )
 
-type StudentRouter struct {
-	h *handler.StudentHandler
+type PortfolioRouter struct {
+	h *handler.PortfolioHandler
 }
 
-func InitStudentRouter(handler *handler.StudentHandler) *StudentRouter {
-	return &StudentRouter{
+func InitPortfolioRouter(handler *handler.PortfolioHandler) *PortfolioRouter {
+	return &PortfolioRouter{
 		h: handler,
 	}
 }
 
-func (r StudentRouter) SetupRouter(g *gin.Engine) {
+func (r PortfolioRouter) SetupRouter(g *gin.Engine) {
 	g.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(
 			http.StatusOK,
@@ -27,6 +27,7 @@ func (r StudentRouter) SetupRouter(g *gin.Engine) {
 		)
 	})
 
-	g.GET("/student", r.h.GetAllStudentHandler)
-	g.POST("/student", r.h.CreateStudentHandler)
+	g.GET("/all-intro", r.h.GetAllIntroHandler)
+	g.POST("/id-intro", r.h.GetIntroHandler)
+	g.POST("/intro", r.h.CreateIntroHandler)
 }
