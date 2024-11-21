@@ -3,8 +3,6 @@ package config
 import (
 	"log"
 	"os"
-
-	"github.com/joho/godotenv"
 )
 
 type AccomConfig struct {
@@ -20,10 +18,11 @@ type AccomConfig struct {
 }
 
 func InitConfig() *AccomConfig {
-	err := godotenv.Load("/app/.env")
-	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
+	// err := godotenv.Load("/app/.env")
+	// if err != nil {
+	// 	log.Fatalf("Error loading .env file: %v", err)
+	// }
+	err := new(error)
 	appMode := os.Getenv("APP_MODE")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
