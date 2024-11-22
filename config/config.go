@@ -20,15 +20,15 @@ type AccomConfig struct {
 }
 
 func InitConfig() *AccomConfig {
-	err := godotenv.Load(".env")
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	log.Printf("WARNING cannot load .env file: %v", err)
+	// }
+	// uncomment if deploy
+	err := godotenv.Load("/app/.env")
 	if err != nil {
 		log.Printf("WARNING cannot load .env file: %v", err)
 	}
-	// uncomment if deploy
-	// err := godotenv.Load("/app/.env")
-	// if err != nil {
-	// log.Printf("WARNING cannot load .env file: %v", err)
-	// }
 
 	appMode := os.Getenv("APP_MODE")
 	if appMode == "" {
