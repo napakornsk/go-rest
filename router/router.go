@@ -28,6 +28,9 @@ func (r PortfolioRouter) SetupRouter(g *gin.Engine) {
 	})
 
 	g.GET("/all-intro", r.h.GetAllIntroHandler)
-	g.POST("/id-intro", r.h.GetIntroHandler)
+	g.POST("/intro-by-id", r.h.GetIntroHandler)
 	g.POST("/intro", r.h.CreateIntroHandler)
+	g.POST("/exp", r.h.CreateWorkExperienceHandler)
+	g.POST("/exp-by-id", r.h.GetWorkExperienceHandler)
+	g.PATCH("/exp-by-id", r.h.UpdateWorkExperienceHandler)
 }

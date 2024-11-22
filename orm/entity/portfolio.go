@@ -1,12 +1,17 @@
 package entity
 
-import "gorm.io/gorm"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Intro struct {
 	gorm.Model
 	FristName   string  `json:"first_name"`
 	LastName    string  `json:"last_name"`
 	Description string  `gorm:"size:255" json:"description"`
+	Status      string  `gorm:"size:1" json:"status"`
 	UserID      uint    `json:"user_id"`
 	ContactID   uint    `json:"contact_id"`
 	Contact     Contact `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"contact"`
@@ -24,4 +29,31 @@ func (Contact) TableName() string {
 
 func (Intro) TableName() string {
 	return "intro"
+}
+
+type WorkExperience struct {
+	gorm.Model
+	CompanyName      string            `gorm:"size:255" json:"company_name"`
+	Role             string            `gorm:"size:255" json:"role"`
+	IsDone           bool              `json:"is_done"`
+	StartDate        *time.Time        `json:"start_date"`
+	EndDate          *time.Time        `json:"end_date"`
+	Status           string            `gorm:"size:1" json:"status"`
+	UserId           uint              `json:"user_id"`
+	WorkId           uint              `json:"work_id"`
+	WorkDescriptions []WorkDescription `gorm:"foreignKey:WorkExperienceID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"work_descriptions"`
+}
+
+type WorkDescription struct {
+	gorm.Model
+	WorkExperienceID uint   `json:"work_experience_id"`
+	Description      string `gorm:"size:255" json:"description"`
+}
+
+func (WorkExperience) TableName() string {
+	return "work_experience"
+}
+
+func (WorkDescription) TableName() string {
+	return "work_description"
 }
