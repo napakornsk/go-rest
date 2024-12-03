@@ -10,7 +10,7 @@ import (
 
 func (h *PortfolioHandler) GetWorkExperienceHandler(c *gin.Context) {
 	req := new(model.GetByUserId)
-	err := c.ShouldBindJSON(req)
+	err := c.BindJSON(req)
 	if err != nil {
 		log.Printf("Failed to bind JSON: %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -42,7 +42,7 @@ func (h *PortfolioHandler) GetWorkExperienceHandler(c *gin.Context) {
 
 func (h *PortfolioHandler) CreateWorkExperienceHandler(c *gin.Context) {
 	req := new(model.WorkExperience)
-	err := c.ShouldBindJSON(req)
+	err := c.BindJSON(req)
 	if err != nil {
 		log.Printf("Failed to bind JSON: %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{

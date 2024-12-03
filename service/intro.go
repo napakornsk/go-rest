@@ -72,4 +72,3 @@ func (s *PortfolioSrv) CreateIntro(model *model.Intro) (*uint, error) {
 
 	return &model.ID, nil
 }
-

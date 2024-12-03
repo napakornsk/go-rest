@@ -56,14 +56,12 @@ func (s *PortfolioSrv) UpdateWorkExperience(userId uint, input *model.WorkExperi
 		return nil, tx.Error
 	}
 
-	// Update existing work experiences' status to "2" for history tracking
 	if err := tx.Model(&model.WorkExperience{}).Where("user_id = ? and work_id = ?", userId, input.WorkId).Update("status", "2").Error; err != nil {
 		log.Printf("Failed to update status for existing work experience: %v", err)
 		tx.Rollback()
 		return nil, err
 	}
 
-	// Create the new WorkExperience entry
 	if err := tx.Omit("id").Create(input).Error; err != nil {
 		log.Printf("Failed to create new work experience: %v", err)
 		tx.Rollback()

@@ -31,6 +31,8 @@ func migration(db *gorm.DB) error {
 		&entity.Contact{},
 		&entity.WorkExperience{},
 		&entity.WorkDescription{},
+		&entity.Skill{},
+		&entity.SkillDescriptions{},
 	); err != nil {
 		return err
 	}

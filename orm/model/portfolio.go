@@ -60,3 +60,25 @@ func (WorkExperience) TableName() string {
 func (WorkDescription) TableName() string {
 	return "work_description"
 }
+
+type Skill struct {
+	gorm.Model
+	Name              string              `gorm:"size:255" json:"name"`
+	UserId            uint                `json:"user_id"`
+	SkillId           uint                `json:"skill_id"`
+	SkillDescriptions []SkillDescriptions `gorm:"foreignKey:SkillId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"skill_descriptions"`
+}
+
+type SkillDescriptions struct {
+	gorm.Model
+	SkillId     uint   `json:"skill_id"`
+	Description string `gorm:"size:255" json:"description"`
+}
+
+func (Skill) TableName() string {
+	return "skill"
+}
+
+func (SkillDescriptions) TableName() string {
+	return "skill_descriptions"
+}
