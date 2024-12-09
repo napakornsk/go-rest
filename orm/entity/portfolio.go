@@ -118,6 +118,7 @@ type PersonalProject struct {
 	GithubURL             string                  `gorm:"size:255" json:"github_url"`
 	Status                string                  `gorm:"size:1" json:"status"`
 	ProjectId             uint                    `json:"project_id"`
+	UserId                uint                    `json:"user_id"`
 	PersonalProjectDetail []PersonalProjectDetail `gorm:"foreignKey:ProjectId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"personal_project_detail"`
 }
 
@@ -142,6 +143,7 @@ type Certificate struct {
 	IssuedDate    *time.Time `json:"issued_date"`
 	Publisher     string     `json:"publisher"`
 	URL           string     `json:"url"`
+	UserId        uint       `json:"user_id"`
 	CertificateId uint       `json:"certificate_id"`
 	Status        string     `gorm:"size:1" json:"status"`
 }
