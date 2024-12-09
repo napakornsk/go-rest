@@ -6,27 +6,13 @@ import (
 	"github.com/napakornsk/go-rest/orm/model"
 )
 
-func (s *PortfolioSrv) GetIntro(userId uint) (*model.Intro, error) {
-	tx := s.repo.Postgres.Begin()
-	if tx.Error != nil {
-		log.Printf("Failed to start transaction: %v", tx.Error)
-		return nil, tx.Error
-	}
-
-	intro := new(model.Intro)
-
-	if err := tx.Where("user_id = ?", userId).Preload("Contact").Find(intro).Error; err != nil {
-		log.Printf("Failed to fetch intro: %v", err)
-		tx.Rollback() // Rollback the transaction on error
+func (s *PortfolioSrv) GetIntroById(userId *uint) (*model.Intro, error) {
+	data, err := s.srv.GetIntroById(userId)
+	if err != nil {
+		log.Printf("error while calling repository: %v\n", err)
 		return nil, err
 	}
-
-	if err := tx.Commit().Error; err != nil {
-		log.Printf("Failed to commit transaction: %v", err)
-		return nil, err
-	}
-
-	return intro, nil
+	return data, nil
 }
 
 func (s *PortfolioSrv) GetAllIntro() ([]*model.Intro, error) {
@@ -53,22 +39,10 @@ func (s *PortfolioSrv) GetAllIntro() ([]*model.Intro, error) {
 }
 
 func (s *PortfolioSrv) CreateIntro(model *model.Intro) (*uint, error) {
-	tx := s.repo.Postgres.Begin()
-	if tx.Error != nil {
-		log.Printf("Failed to start transaction: %v", tx.Error)
-		return nil, tx.Error
-	}
-
-	if err := tx.Create(model).Error; err != nil {
-		log.Printf("Failed to create intro: %v", err)
-		tx.Rollback() // Rollback the transaction on error
+	id, err := s.srv.Create(model)
+	if err != nil {
+		log.Printf("error while calling repository: %v\n", err)
 		return nil, err
 	}
-
-	if err := tx.Commit().Error; err != nil {
-		log.Printf("Failed to commit transaction: %v", err)
-		return nil, err
-	}
-
-	return &model.ID, nil
+	return id, nil
 }

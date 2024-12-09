@@ -82,3 +82,72 @@ func (Skill) TableName() string {
 func (SkillDescriptions) TableName() string {
 	return "skill_descriptions"
 }
+
+type Education struct {
+	gorm.Model
+	Name        string     `gorm:"size:255" json:"name"`
+	Major       string     `gorm:"size:255" json:"major"`
+	StartDate   *time.Time `json:"start_date"`
+	EndDate     *time.Time `json:"end_date"`
+	EducationId uint       `json:"education_id"`
+	UserId      uint       `json:"user_id"`
+	Status      string     `gorm:"size:1" json:"status"`
+}
+
+func (Education) TableName() string {
+	return "education"
+}
+
+type Language struct {
+	gorm.Model
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Level       string `json:"level"`
+	UserId      uint   `json:"user_id"`
+	LanguageId  uint   `json:"language_id"`
+	Status      string `gorm:"size:1" json:"status"`
+}
+
+func (Language) TableName() string {
+	return "language"
+}
+
+type PersonalProject struct {
+	gorm.Model
+	Name                  string                  `gorm:"size:255" json:"name"`
+	Description           string                  `gorm:"size:255" json:"description"`
+	QrCode                string                  `gorm:"size:255" json:"qr_code"`
+	GithubURL             string                  `gorm:"size:255" json:"github_url"`
+	Status                string                  `gorm:"size:1" json:"status"`
+	ProjectId             uint                    `json:"project_id"`
+	PersonalProjectDetail []PersonalProjectDetail `gorm:"foreignKey:ProjectId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"personal_project_detail"`
+}
+
+func (PersonalProject) TableName() string {
+	return "personal_project"
+}
+
+type PersonalProjectDetail struct {
+	gorm.Model
+	Type        string `gorm:"size:1" json:"type"`
+	Description string `json:"description"`
+	ProjectId   uint   `json:"project_id"`
+}
+
+func (PersonalProjectDetail) TableName() string {
+	return "personal_project_detail"
+}
+
+type Certificate struct {
+	gorm.Model
+	Name          string     `json:"name"`
+	IssuedDate    *time.Time `json:"issued_date"`
+	Publisher     string     `json:"publisher"`
+	URL           string     `json:"url"`
+	CertificateId uint       `json:"certificate_id"`
+	Status        string     `gorm:"size:1" json:"status"`
+}
+
+func (Certificate) TableName() string {
+	return "certificate"
+}

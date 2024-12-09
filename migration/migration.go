@@ -33,6 +33,11 @@ func migration(db *gorm.DB) error {
 		&entity.WorkDescription{},
 		&entity.Skill{},
 		&entity.SkillDescriptions{},
+		&entity.PersonalProject{},
+		&entity.PersonalProjectDetail{},
+		&entity.Language{},
+		&entity.Certificate{},
+		&entity.Education{},
 	); err != nil {
 		return err
 	}

@@ -34,4 +34,10 @@ func (r PortfolioRouter) SetupRouter(g *gin.Engine) {
 	g.POST("/exp-by-id", r.h.GetWorkExperienceHandler)
 	g.PATCH("/exp-by-id", r.h.UpdateWorkExperienceHandler)
 	g.POST("/skill", r.h.CreateSkillHandler)
+	g.GET("/education", r.h.GetEducationHandler)
+	g.POST("/education", r.h.CreateEducationHandler)
+	g.GET("/certificate", r.h.CreateCertificateHandler)
+	g.POST("/certificate", r.h.GetCertificateHandler)
+	g.GET("/personal-project", r.h.GetPersonalProjectHandler)
+	g.POST("/personal-project", r.h.CreatePersonalProjectHandler)
 }

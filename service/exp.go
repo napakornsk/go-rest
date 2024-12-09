@@ -6,47 +6,24 @@ import (
 	"github.com/napakornsk/go-rest/orm/model"
 )
 
-func (s *PortfolioSrv) GetWorkExperience(userId uint) (*model.WorkExperience, error) {
-	tx := s.repo.Postgres.Begin()
-	if tx.Error != nil {
-		log.Printf("Failed to start transaction: %v", tx.Error)
-		return nil, tx.Error
-	}
-
-	exp := new(model.WorkExperience)
-	if err := tx.Where("user_id = ?", userId).Preload("WorkDescriptions").Find(exp).Error; err != nil {
-		log.Printf("Failed to fetch intro: %v", err)
-		tx.Rollback() // Rollback the transaction on error
+func (s *PortfolioSrv) GetWorkExperience(userId uint) ([]model.WorkExperience, error) {
+	data, err := s.srv.GetWorkExperienceById(&userId)
+	if err != nil {
+		log.Printf("error while calling repository: %v\n", err)
 		return nil, err
 	}
 
-	if err := tx.Commit().Error; err != nil {
-		log.Printf("Failed to commit transaction: %v", err)
-		return nil, err
-	}
-
-	return exp, nil
+	return data, nil
 }
 
 func (s *PortfolioSrv) CreateWorkExperience(model *model.WorkExperience) (*uint, error) {
-	tx := s.repo.Postgres.Begin()
-	if tx.Error != nil {
-		log.Printf("Failed to start transaction: %v", tx.Error)
-		return nil, tx.Error
-	}
-
-	if err := tx.Omit("id").Create(model).Error; err != nil {
-		log.Printf("Failed to create intro: %v", err)
-		tx.Rollback() // Rollback the transaction on error
+	id, err := s.srv.Create(model)
+	if err != nil {
+		log.Printf("error while calling repository: %v\n", err)
 		return nil, err
 	}
 
-	if err := tx.Commit().Error; err != nil {
-		log.Printf("Failed to commit transaction: %v", err)
-		return nil, err
-	}
-
-	return &model.ID, nil
+	return id, nil
 }
 
 func (s *PortfolioSrv) UpdateWorkExperience(userId uint, input *model.WorkExperience) (*uint, error) {

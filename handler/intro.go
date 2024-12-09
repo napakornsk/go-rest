@@ -3,23 +3,26 @@ package handler
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/napakornsk/go-rest/orm/model"
 )
 
 func (h *PortfolioHandler) GetIntroHandler(c *gin.Context) {
-	req := new(model.GetByUserId)
-	err := c.BindJSON(req)
+	userIdStr := c.Query("user_id")
+	userId64, err := strconv.ParseUint(userIdStr, 10, 64)
 	if err != nil {
-		log.Printf("Failed to bind JSON: %v\n", err)
+		log.Printf("Failed to parse string query: %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Failed to bind JSON: %s" + err.Error(),
+			"message": "Failed to parse string query: %s" + err.Error(),
 		})
 		return
 	}
 
-	data, err := h.srv.GetIntro(req.UserId)
+	userId := uint(userId64)
+
+	data, err := h.srv.GetIntroById(&userId)
 	if err != nil {
 		log.Printf("Failed to receive data from service: %v\n", err)
 		c.IndentedJSON(

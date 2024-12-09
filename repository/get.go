@@ -68,3 +68,66 @@ func (r *PortfolioRepository) GetIntroById(userId *uint) (*model.Intro, error) {
 
 	return &data, nil
 }
+
+func (r *PortfolioRepository) GetEducationById(userId *uint) ([]model.Education, error) {
+	tx := r.repo.Postgres.Begin()
+	if tx.Error != nil {
+		log.Printf("Failed to start transaction: %v\n", tx.Error)
+		return nil, tx.Error
+	}
+	var data []model.Education
+	if err := tx.Where("user_id = ?", *userId).Find(&data).Error; err != nil {
+		log.Printf("Failed to create model: %v\n", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		log.Printf("Failed to commit transaction: %v\n", err)
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (r *PortfolioRepository) GetPersonalProjectById(userId *uint) ([]model.PersonalProject, error) {
+	tx := r.repo.Postgres.Begin()
+	if tx.Error != nil {
+		log.Printf("Failed to start transaction: %v\n", tx.Error)
+		return nil, tx.Error
+	}
+	var data []model.PersonalProject
+	if err := tx.Preload("PersonalProjectDetail").Where("user_id = ?", *userId).Find(&data).Error; err != nil {
+		log.Printf("Failed to create model: %v\n", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		log.Printf("Failed to commit transaction: %v\n", err)
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (r *PortfolioRepository) GetCertificateById(userId *uint) ([]model.Certificate, error) {
+	tx := r.repo.Postgres.Begin()
+	if tx.Error != nil {
+		log.Printf("Failed to start transaction: %v\n", tx.Error)
+		return nil, tx.Error
+	}
+	var data []model.Certificate
+	if err := tx.Where("user_id = ?", *userId).Find(&data).Error; err != nil {
+		log.Printf("Failed to create model: %v\n", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		log.Printf("Failed to commit transaction: %v\n", err)
+		return nil, err
+	}
+
+	return data, nil
+}
