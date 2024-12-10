@@ -17,7 +17,7 @@ func InitPortfolioRouter(handler *handler.PortfolioHandler) *PortfolioRouter {
 	}
 }
 
-func (r PortfolioRouter) SetupRouter(g *gin.Engine) {
+func (r *PortfolioRouter) SetupRouter(g *gin.Engine) {
 	g.GET("/ping", func(ctx *gin.Context) {
 		ctx.JSON(
 			http.StatusOK,
@@ -26,7 +26,6 @@ func (r PortfolioRouter) SetupRouter(g *gin.Engine) {
 			},
 		)
 	})
-
 	g.GET("/all-intro", r.h.GetAllIntroHandler)
 	g.GET("/intro", r.h.GetIntroHandler)
 	g.POST("/intro", r.h.CreateIntroHandler)
@@ -40,4 +39,8 @@ func (r PortfolioRouter) SetupRouter(g *gin.Engine) {
 	g.POST("/certificate", r.h.CreateCertificateHandler)
 	g.GET("/personal-project", r.h.GetPersonalProjectHandler)
 	g.POST("/personal-project", r.h.CreatePersonalProjectHandler)
+}
+
+func (r *PortfolioRouter) SetupProtectedRouter(g *gin.RouterGroup) {
+	g.GET("/protected", r.h.ProtectedEndpointHandler)
 }

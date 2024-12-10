@@ -8,15 +8,16 @@ import (
 )
 
 type AccomConfig struct {
-	Host     string
-	User     string
-	Password string
-	DbName   string
-	Port     string
-	Timezone string
-	SslMode  string
-	AppPort  string
-	AppMode  string
+	Host      string
+	User      string
+	Password  string
+	DbName    string
+	Port      string
+	Timezone  string
+	SslMode   string
+	AppPort   string
+	AppMode   string
+	JWTSecret string
 }
 
 func InitConfig() *AccomConfig {
@@ -70,15 +71,21 @@ func InitConfig() *AccomConfig {
 		log.Fatalf("PORT not set in .env")
 	}
 
+	jwtSecret := os.Getenv("JWTSECRET")
+	if appPort == "" {
+		log.Fatalf("JWTSECRET not set in .env")
+	}
+
 	return &AccomConfig{
-		Host:     host,
-		User:     user,
-		Password: password,
-		DbName:   dbName,
-		Port:     port,
-		Timezone: timezone,
-		SslMode:  sslMode,
-		AppPort:  appPort,
-		AppMode:  appMode,
+		Host:      host,
+		User:      user,
+		Password:  password,
+		DbName:    dbName,
+		Port:      port,
+		Timezone:  timezone,
+		SslMode:   sslMode,
+		AppPort:   appPort,
+		AppMode:   appMode,
+		JWTSecret: jwtSecret,
 	}
 }
