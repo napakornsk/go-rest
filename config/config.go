@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 
@@ -25,6 +26,7 @@ type AccomConfig struct {
 }
 
 var PrvKey *ecdsa.PrivateKey
+var PbcKey *ecdsa.PublicKey
 
 func InitConfig() *AccomConfig {
 	err := godotenv.Load(".env")
@@ -88,6 +90,11 @@ func InitConfig() *AccomConfig {
 	}
 	PrvKey = prvKey
 
+	PbcKey, err = loadECDSAPublicKey("public.pem")
+	if err != nil {
+		log.Fatalf("Cannot load public key")
+	}
+
 	return &AccomConfig{
 		Host:      host,
 		User:      user,
@@ -122,4 +129,31 @@ func loadECDSAPrivateKey(filename string) (*ecdsa.PrivateKey, error) {
 	}
 
 	return privKey, nil
+}
+
+func loadECDSAPublicKey(filename string) (*ecdsa.PublicKey, error) {
+	// Read the PEM file containing the private key
+	keyData, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decode the PEM file to extract the private key
+	block, _ := pem.Decode(keyData)
+	if block == nil {
+		return nil, errors.New("failed to parse PEM block containing the key")
+	}
+
+	// Parse the private key into ECDSA format
+	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	pbcKey, ok := pub.(*ecdsa.PublicKey)
+	if !ok {
+		return nil, fmt.Errorf("public key is not of type *ecdsa.PublicKey")
+	}
+
+	return pbcKey, nil
 }

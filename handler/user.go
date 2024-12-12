@@ -97,15 +97,12 @@ func (h *PortfolioHandler) SigninUserHandler(c *gin.Context) {
 		return
 	}
 
-	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", *res, 3600, "", "", false, true)
-
 	// respond
 	c.IndentedJSON(
 		http.StatusOK,
 		gin.H{
-			// "message": "successful",
-			// "data":    res,
+			"message": "successful",
+			"data":    res,
 		},
 	)
 }
