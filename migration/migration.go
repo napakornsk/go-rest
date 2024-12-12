@@ -27,17 +27,18 @@ func main() {
 
 func migration(db *gorm.DB) error {
 	if err := db.AutoMigrate(
-		&entity.Intro{},
-		&entity.Contact{},
-		&entity.WorkExperience{},
-		&entity.WorkDescription{},
-		&entity.Skill{},
-		&entity.SkillDescriptions{},
-		&entity.PersonalProject{},
-		&entity.PersonalProjectDetail{},
-		&entity.Language{},
-		&entity.Certificate{},
-		&entity.Education{},
+		// &entity.Intro{},
+		// &entity.Contact{},
+		// &entity.WorkExperience{},
+		// &entity.WorkDescription{},
+		// &entity.Skill{},
+		// &entity.SkillDescriptions{},
+		// &entity.PersonalProject{},
+		// &entity.PersonalProjectDetail{},
+		// &entity.Language{},
+		// &entity.Certificate{},
+		// &entity.Education{},
+		&entity.User{},
 	); err != nil {
 		return err
 	}

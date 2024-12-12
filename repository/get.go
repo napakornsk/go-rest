@@ -131,3 +131,24 @@ func (r *PortfolioRepository) GetCertificateById(userId *uint) ([]model.Certific
 
 	return data, nil
 }
+
+func (r *PortfolioRepository) GetUserByUsername(userName *string) (*model.User, error) {
+	tx := r.repo.Postgres.Begin()
+	if tx.Error != nil {
+		log.Printf("Failed to start transaction: %v\n", tx.Error)
+		return nil, tx.Error
+	}
+	data := new(model.User)
+	if err := tx.Where("username = ?", *userName).First(data).Error; err != nil {
+		log.Printf("Failed to create model: %v\n", err)
+		tx.Rollback()
+		return nil, err
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		log.Printf("Failed to commit transaction: %v\n", err)
+		return nil, err
+	}
+
+	return data, nil
+}

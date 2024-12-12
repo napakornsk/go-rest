@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/napakornsk/go-rest/handler"
+	"github.com/napakornsk/go-rest/middleware"
 )
 
 type PortfolioRouter struct {
@@ -26,6 +27,8 @@ func (r *PortfolioRouter) SetupRouter(g *gin.Engine) {
 			},
 		)
 	})
+	g.POST("/signup", r.h.SignupUserHandler)
+	g.POST("/signin", r.h.SigninUserHandler)
 	g.GET("/all-intro", r.h.GetAllIntroHandler)
 	g.GET("/intro", r.h.GetIntroHandler)
 	g.POST("/intro", r.h.CreateIntroHandler)
@@ -42,5 +45,5 @@ func (r *PortfolioRouter) SetupRouter(g *gin.Engine) {
 }
 
 func (r *PortfolioRouter) SetupProtectedRouter(g *gin.RouterGroup) {
-	g.GET("/protected", r.h.ProtectedEndpointHandler)
+	g.GET("/validate", middleware.RequireAuth, r.h.ProtectedEndpointHandler)
 }

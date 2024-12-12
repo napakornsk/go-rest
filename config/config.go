@@ -1,6 +1,10 @@
 package config
 
 import (
+	"crypto/ecdsa"
+	"crypto/x509"
+	"encoding/pem"
+	"errors"
 	"log"
 	"os"
 
@@ -19,6 +23,8 @@ type AccomConfig struct {
 	AppMode   string
 	JWTSecret string
 }
+
+var PrvKey *ecdsa.PrivateKey
 
 func InitConfig() *AccomConfig {
 	err := godotenv.Load(".env")
@@ -76,6 +82,12 @@ func InitConfig() *AccomConfig {
 		log.Fatalf("JWTSECRET not set in .env")
 	}
 
+	prvKey, err := loadECDSAPrivateKey("private.pem")
+	if err != nil {
+		log.Fatalf("Cannot load private key")
+	}
+	PrvKey = prvKey
+
 	return &AccomConfig{
 		Host:      host,
 		User:      user,
@@ -88,4 +100,26 @@ func InitConfig() *AccomConfig {
 		AppMode:   appMode,
 		JWTSecret: jwtSecret,
 	}
+}
+
+func loadECDSAPrivateKey(filename string) (*ecdsa.PrivateKey, error) {
+	// Read the PEM file containing the private key
+	keyData, err := os.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decode the PEM file to extract the private key
+	block, _ := pem.Decode(keyData)
+	if block == nil {
+		return nil, errors.New("failed to parse PEM block containing the key")
+	}
+
+	// Parse the private key into ECDSA format
+	privKey, err := x509.ParseECPrivateKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	return privKey, nil
 }
