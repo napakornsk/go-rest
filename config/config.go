@@ -84,13 +84,13 @@ func InitConfig() *AccomConfig {
 		log.Fatalf("JWTSECRET not set in .env")
 	}
 
-	prvKey, err := loadECDSAPrivateKey("private.pem")
+	prvKey, err := loadECDSAPrivateKey("/etc/secrets/private.pem")
 	if err != nil {
 		log.Fatalf("Cannot load private key")
 	}
 	PrvKey = prvKey
 
-	PbcKey, err = loadECDSAPublicKey("public.pem")
+	PbcKey, err = loadECDSAPublicKey("/etc/secrets/public.pem")
 	if err != nil {
 		log.Fatalf("Cannot load public key")
 	}
